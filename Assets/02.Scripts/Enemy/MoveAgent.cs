@@ -37,7 +37,7 @@ public class MoveAgent : MonoBehaviour
         agent.isStopped = false;
     }
     Vector3 currentDestination = Vector3.zero;
-    int idx = 0;
+    int nextIdx = 0;
     
 
 
@@ -72,8 +72,14 @@ public class MoveAgent : MonoBehaviour
             patrolLists.RemoveAt(0);
         }
         agent.speed = walkSpeed;
-        currentDestination = patrolLists[0].position;
+        nextIdx = Random.Range(0, patrolLists.Count);
+        currentDestination = patrolLists[nextIdx].position;
         isPatrolling = true;
+        
+    }
+    public void Stop()
+    {
+        GetComponent<NavMeshAgent>().isStopped = true;
     }
 
     void Update()
@@ -99,9 +105,10 @@ public class MoveAgent : MonoBehaviour
         agent.destination = currentDestination;
         if (Vector3.Distance(agent.transform.position, currentDestination) < 3.0f)
         {
-            idx++;
-            if (idx == patrolLists.Count) idx = 0;
-            currentDestination = patrolLists[idx].position;
+            nextIdx = Random.Range(0, patrolLists.Count);
+            // nextIdx++;
+            //if (nextIdx == patrolLists.Count) nextIdx = 0;
+            currentDestination = patrolLists[nextIdx].position;
         }
     }
 }

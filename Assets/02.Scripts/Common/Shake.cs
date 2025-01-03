@@ -10,6 +10,8 @@ public class Shake : MonoBehaviour
     private Quaternion originRot;
     void Start()
     {
+        shakeCamera = transform;
+
         originPos = shakeCamera.position;
         originRot = shakeCamera.rotation;
     }
@@ -20,7 +22,7 @@ public class Shake : MonoBehaviour
         {
             Vector3 shakePos = Random.insideUnitSphere;
             shakeCamera.position = shakePos * magnitudePos;
-            if (shakeRotate) //불규칙한 회적을 사용할 경우라면
+            if (shakeRotate) //불규칙한 회전을 사용할 경우라면
             {   //불규칙한 회전 값을 펄린 노이즈 함수를 이용해 추출한다.
                 Vector3 shakeRot = new Vector3(0f, 0f, Mathf.PerlinNoise(Time.time*magnitudeRot,0f));
                 shakeCamera.rotation = Quaternion.Euler(shakeRot);
@@ -30,5 +32,6 @@ public class Shake : MonoBehaviour
         }
         shakeCamera.position = originPos;
         shakeCamera.rotation = originRot;
+        shakeRotate = false;
     }
 }

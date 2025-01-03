@@ -8,6 +8,7 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] readonly string strVertical = "Vertical"; //런타임시 할당 
     [SerializeField] readonly string strMouse_X = "Mouse X";
     [SerializeField] readonly string fireBtn = "Fire1";
+    [SerializeField] PlayerDamage damage;
     //[SerializeField] readonly string reloadBtn = "Reload";
 
     public float h = 0, v = 0, r= 0;
@@ -17,11 +18,13 @@ public class PlayerInput : MonoBehaviour
 
     void Start()
     {
+        damage = GetComponent<PlayerDamage>();
         
     }
 
     void Update()
     {
+        if (damage.isPlayerDie) return;
         if (GameManager.instance != null && GameManager.instance.isGameover) //초기화하고 빠져나감
         {
             h = 0f;

@@ -11,7 +11,7 @@ public class MoveAgent2 : MonoBehaviour
     [SerializeField] Transform playerTr;
     [SerializeField] Transform tr;
 
-    int currentIdx = 0;
+    int nextIdx = 0;
     float patrolPointDistance = 3.0f;
     
     float damping = 8f;
@@ -29,6 +29,7 @@ public class MoveAgent2 : MonoBehaviour
             points.transform.GetComponentsInChildren<Transform>(patrolPoints);
             patrolPoints.RemoveAt(0);
         }
+        nextIdx = Random.Range(0, patrolPoints.Count);
     }
 
     private void Update()
@@ -43,12 +44,19 @@ public class MoveAgent2 : MonoBehaviour
 
     public void Patrol()
     {
-        agent.destination = patrolPoints[currentIdx].position;
-        if(Vector3.Distance(transform.position, patrolPoints[currentIdx].position) <= patrolPointDistance)
+        agent.destination = patrolPoints[nextIdx].position;
+        if(Vector3.Distance(transform.position, patrolPoints[nextIdx].position) <= patrolPointDistance)
         {
-            currentIdx++;
-            if (currentIdx > patrolPoints.Count) currentIdx = 0;
+            //nextIdx++;
+            //if (nextIdx > patrolPoints.Count) nextIdx = 0;
+            nextIdx = Random.Range(0, patrolPoints.Count);
+            //랜덤하게 이동하도록 함.
         }
-        
+
+    }
+    public void Stop()
+    {
+        GetComponent<NavMeshAgent>().isStopped = true;
+
     }
 }

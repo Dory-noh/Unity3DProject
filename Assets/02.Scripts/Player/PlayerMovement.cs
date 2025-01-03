@@ -14,8 +14,10 @@ public class PlayerMovement : MonoBehaviour
 
     public float moveSpeed = 6f;
     public float turnSpeed = 120f;
+    private PlayerDamage damage;
     void Start()
     {
+        damage = GetComponent<PlayerDamage>();
         playerInput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
         tr = transform;
@@ -23,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-
+        if (damage.isPlayerDie) return;
         MoveAndRotate();
         Sprint();
     }

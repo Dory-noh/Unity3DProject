@@ -30,25 +30,41 @@ public class Enemy2AI : MonoBehaviour
     float patrolSpeed = 4f;
     float traceSpeed = 8f;
 
-    private bool isDie = false;
+    public bool isDie = false;
     private readonly string playerTag = "Player";
     private readonly int hashIsStop = Animator.StringToHash("IsStop");
     private readonly int hashSpeed = Animator.StringToHash("Speed");
     private readonly int hashDie = Animator.StringToHash("Die");
-    private readonly int hashDieIdx = Animator.StringToHash("DIeIdx");
+    private readonly int hashDieIdx = Animator.StringToHash("DieIdx");
+    private readonly int hashPlayerDie = Animator.StringToHash("PlayerDie");
+    private readonly int hashOffeset = Animator.StringToHash("Offset");
+    private readonly int hashWalkSpeed = Animator.StringToHash("WalkSpeed");
 
     void Start()
     {
         playerTr = GameObject.FindGameObjectWithTag(playerTag).transform;
+        
         tr = transform;
-        agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
+        
+        
         enemyFire = GetComponent<Enemy2Fire>();
         enemyFire.isFire = false;
     }
-
+    private void OnEnable()
+    {
+        moveAgent = GetComponent<MoveAgent2>();
+        animator = GetComponent<Animator>();
+        agent = GetComponent<NavMeshAgent>();
+        state = State.idle;
+        isDie = false;
+        animator.SetFloat(hashOffeset, Random.Range(1f, 3f));
+        animator.SetFloat(hashWalkSpeed, Random.Range(1f, 2f));
+        PlayerDamage.onDeath += OnPlayerDie;
+       // BarrelCtrl.OnEnemyDie += Die;
+    }
     void Update()
     {
+        if (GameManager.instance.isGameover) return;
         if (!isDie)
         {
             //거리에 따른 상태 표현 idle-attack-trace-patrol
@@ -88,11 +104,13 @@ public class Enemy2AI : MonoBehaviour
     }
     public void Die()
     {
+        if (isDie == true) return;
         agent.isStopped = true;
         enemyFire.isFire = false;
         animator.SetTrigger(hashDie);
         animator.SetInteger(hashDieIdx, Random.Range(0, 3));
         isDie = true;
+        //gameObject.SetActive(false);
     }
     private void Patrol()
     {
@@ -124,5 +142,17 @@ public class Enemy2AI : MonoBehaviour
         agent.isStopped = true;
         enemyFire.isFire = false;
         animator.SetBool(hashIsStop, true);
+    }
+
+    public void OnPlayerDie()
+    {
+        moveAgent.Stop();
+        enemyFire.isFire = false;
+        StopAllCoroutines();
+        animator.SetTrigger(hashPlayerDie);
+    }
+    private void OnDisable()
+    {
+        PlayerDamage.onDeath -= OnPlayerDie;
     }
 }

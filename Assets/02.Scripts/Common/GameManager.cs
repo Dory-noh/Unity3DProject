@@ -17,7 +17,8 @@ public class GameManager : MonoBehaviour
             return m_instance;
         }
     }
-    public bool isGameover { get; private set; } = false;
+    public bool isGameover { get; set; } = false;
+
     void Start()
     {
         

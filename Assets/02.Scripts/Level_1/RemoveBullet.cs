@@ -22,7 +22,7 @@ public class RemoveBullet : MonoBehaviour
             source.PlayOneShot(hitclip, 1.0f);
             GameObject hitEff = Instantiate(hitEffect,col.transform.position,col.transform.rotation);
             Destroy(hitEff, 2.0f);
-            Destroy(col.gameObject);
+            col.gameObject.SetActive(false);
         }
     }
 }

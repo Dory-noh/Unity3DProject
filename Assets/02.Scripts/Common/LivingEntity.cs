@@ -11,7 +11,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
     protected float InitHealth = 100f; //protected 해당 클래스를 상속받은 클래스만 해당 변수에 접근할 수 있다.
     public float Health { get; protected set; } //프로퍼티를 만들었다.
     public bool dead {  get; protected set; } //수정은 자식 클래스에서만 가능하다.
-    public event Action onDeath; //사망했을 때 실행될 이벤트이다.
+    public static event Action onDeath; //사망했을 때 실행될 이벤트이다.
 
     protected virtual void OnEnable(){ //virtual: 상속으로 물려줄 메서드에는 virtual 키워드를 붙인다. //OnEnable():오브젝트가 활성화될 때 자동으로 실행되는 CallBack메서드
         dead = false;

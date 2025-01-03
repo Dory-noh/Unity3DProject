@@ -12,7 +12,8 @@ public class Enemy2Fire : MonoBehaviour
     [SerializeField] AudioClip fireClip;
     [SerializeField] AudioClip reloadClip;
     [SerializeField] Transform firePos;
-    [SerializeField] GameObject bulletPrefab;
+    [SerializeField] Enemy2AI enemy2AI;
+    //[SerializeField] GameObject bulletPrefab;
     [SerializeField] MeshRenderer muzzleFlash;
 
     public bool isFire = false;
@@ -28,9 +29,10 @@ public class Enemy2Fire : MonoBehaviour
     private readonly int hashReload = Animator.StringToHash("Reload");
     void Start()
     {
+        enemy2AI = GetComponent<Enemy2AI>();
         playerTr = GameObject.FindGameObjectWithTag(playerTag).transform;
         tr = transform;
-        bulletPrefab = Resources.Load<GameObject>("Prefab/E2_Bullet");
+        //bulletPrefab = Resources.Load<GameObject>("Prefab/E2_Bullet");
         firePos = transform.GetChild(1).GetChild(0).GetChild(0).transform;
         reloadClip = E2_GunData.reloadClip;
         fireClip = E2_GunData.shotClip;
@@ -49,7 +51,7 @@ public class Enemy2Fire : MonoBehaviour
 
     void Update()
     {
-        if (isFire)
+        if (isFire&&!enemy2AI.isDie)
         {
             if(Time.time >= nextFire && !isReload)
             {
@@ -64,7 +66,11 @@ public class Enemy2Fire : MonoBehaviour
 
     public void Fire()
     {
-        Instantiate(bulletPrefab, firePos.position, firePos.rotation);
+        //Instantiate(bulletPrefab, firePos.position, firePos.rotation);
+        var bullet = PoolingManager.p_instance.GetEnemy2Bullet();
+        bullet.transform.position = firePos.position;
+        bullet.transform.rotation = firePos.rotation;
+        bullet.gameObject.SetActive(true);
         source.PlayOneShot(fireClip, 1f);
         isReload = (--curBullet % maxBullet) == 0;
         animator.SetTrigger(hashFire);

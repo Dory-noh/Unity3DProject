@@ -11,12 +11,14 @@ public class EnemyFire : MonoBehaviour
     [SerializeField] GameObject fireEffect;
     [SerializeField] Transform tr;
     [SerializeField] Transform playerTr;
-    [SerializeField] GameObject E_Bullet;
+    //[SerializeField] GameObject E_Bullet;
+    [SerializeField] EnemyAI enemyAI;
     [SerializeField] MeshRenderer muzzleFlash;
     public Transform E_FirePos;
 
     private readonly string playerTag = "Player";
     private readonly int hashReload = Animator.StringToHash("Reload");
+    private readonly int hashOffset = Animator.StringToHash("Offset");
     public E_GunData gunData_Ak;
 
     private int curBullet = 10;
@@ -27,17 +29,20 @@ public class EnemyFire : MonoBehaviour
     public bool isFire = false;
     WaitForSeconds reloadWs;
     WaitForSeconds muzzleWs;
+    
 
-    void Start()
+    IEnumerator Start()
     {
+        enemyAI = GetComponent<EnemyAI>();
+        animator = GetComponent<Animator>();
         fireClip = gunData_Ak.shotClip;
         reloadClip = gunData_Ak.reloadClip;
         fireEffect = Resources.Load<GameObject>("Effect/FlareMobile");
         source = GetComponent<AudioSource>();
-        animator = GetComponent<Animator>();
+        yield return new WaitForSeconds(0.5f);
         tr = GetComponent<Transform>();
         playerTr = GameObject.FindGameObjectWithTag(playerTag).transform;
-        E_Bullet = Resources.Load<GameObject>("Prefab/E_Bullet");
+        //E_Bullet = Resources.Load<GameObject>("Prefab/E_Bullet");
         E_FirePos = transform.GetChild(3).GetChild(0).GetChild(0).transform;
         muzzleFlash = E_FirePos.GetComponentInChildren<MeshRenderer>();
         muzzleFlash.enabled = false;
@@ -47,7 +52,7 @@ public class EnemyFire : MonoBehaviour
 
     void Update()
     {
-        if (isFire)
+        if (isFire && !enemyAI.isDie)
         {
             if(Time.time >= nextFire && !isReloading)
             {
@@ -61,7 +66,11 @@ public class EnemyFire : MonoBehaviour
     void Fire()
     {
         //CartrigeEffect.Play();
-        Instantiate(E_Bullet,E_FirePos.position,E_FirePos.rotation);
+        //Instantiate(E_Bullet,E_FirePos.position,E_FirePos.rotation);
+        var bullet = PoolingManager.p_instance.GetEnemyBullet();
+        bullet.transform.position = E_FirePos.position;
+        bullet.transform.rotation = E_FirePos.rotation;
+        bullet.SetActive(true);
         source.PlayOneShot(fireClip, 1.0f);
         isReloading = (--curBullet % maxBullet == 0);
         muzzleWs = new WaitForSeconds(Random.Range(0.05f, 0.2f));

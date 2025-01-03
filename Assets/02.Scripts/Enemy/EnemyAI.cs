@@ -27,7 +27,7 @@ public class EnemyAI : MonoBehaviour
     private float dist = 0;
     [SerializeField] private float attackDist = 6f;
     [SerializeField] private float traceDist = 12f;
-    private bool isDie = false;
+    public bool isDie = false;
 
     private readonly string tagPlayer = "Player";
     private readonly int hashIsMove = Animator.StringToHash("IsMove");
@@ -35,16 +35,30 @@ public class EnemyAI : MonoBehaviour
     private readonly int hashFireTrigger = Animator.StringToHash("FireTrigger");
     private readonly int hashDieIdx = Animator.StringToHash("DieIdx");
     private readonly int hashDie = Animator.StringToHash("Die");
+    private readonly int hashOffset = Animator.StringToHash("Offset");
+    private readonly int hashWalkSpeed = Animator.StringToHash("WalkSpeed");
+    private readonly int hashPlayerDie = Animator.StringToHash("PlayerDie");
     void Start()
     {
         enemyFire = GetComponent<EnemyFire>();
-        animator = GetComponent<Animator>();
+        
         playerTr = GameObject.FindGameObjectWithTag(tagPlayer).transform;
-        moveAgent = GetComponent<MoveAgent>();
-        agent = GetComponent<NavMeshAgent>();
+        
+        
         tr = GetComponent<Transform>();
     }
-
+    private void OnEnable()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        moveAgent = GetComponent<MoveAgent>();
+        animator = GetComponent<Animator>();
+        animator.SetFloat(hashOffset, Random.Range(1f, 3f));
+        animator.SetFloat(hashWalkSpeed, Random.Range(1f, 2f));
+        state = State.idle;
+        isDie = false;
+        PlayerDamage.onDeath += OnPlayerDie;
+        //BarrelCtrl.OnEnemyDie += Die;
+    }
     void Update()
     {   if (GameManager.instance != null && GameManager.instance.isGameover) return;
 
@@ -118,11 +132,27 @@ public class EnemyAI : MonoBehaviour
 
     public void Die()
     {
+        if (isDie == true) return;
         agent.isStopped = true;
-        enemyFire.isFire = false;
         animator.SetTrigger(hashDie);
         int dieIdx = Random.Range(0, 3);
         animator.SetInteger(hashDieIdx, dieIdx);
         isDie = true;
+        //gameObject.SetActive(false);
+
+    }
+
+    public void OnPlayerDie() //플레이어 사망시 호출될 함수
+    {
+        moveAgent.Stop();
+        enemyFire.isFire = false;
+        StopAllCoroutines();
+        animator.SetTrigger(hashPlayerDie);
+        GameManager.instance.isGameover = true;
+    }
+
+    private void OnDisable()
+    {
+        PlayerDamage.onDeath -= OnPlayerDie;
     }
 }

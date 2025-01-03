@@ -36,20 +36,31 @@ public class EnemyDamage : LivingEntity
     public override void Die()
     {
         enemyAI.Die();
-        rb.Sleep();
         capCol.enabled = false;
-        Destroy(gameObject, 5f);
-        base.Die();
+        rb.isKinematic = true;
+        //base.Die();
+        if (dead == false)
+            StartCoroutine(PoolPush());
+    }
+
+    IEnumerator PoolPush()
+    {
+        yield return new WaitForSeconds(3f);
+        capCol.enabled = true;
+        rb.isKinematic = false;
+        gameObject.SetActive(false);
+        Health = InitHealth;
     }
 
     private void OnCollisionEnter(Collision col)
     {
         if (col.transform.CompareTag(bulletTag))
         {
-            Destroy(col.gameObject);
+           
             Vector3 hitPoint = col.contacts[0].point;//첫 번째로 접촉한 지점의 위치
                                                      //(PlayerAndEnemyConnect.connect.fireBullet.firePos.position - hitPoint).normalized;
             Vector3 hitNormal = col.contacts[0].normal; //첫 번째로 접촉한 지점의 방향 
+            col.gameObject.SetActive(false);
             OnDamage(25f, hitPoint, hitNormal);
             GetComponent<Rigidbody>().isKinematic = true;
         }

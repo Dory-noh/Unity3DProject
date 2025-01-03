@@ -1,3 +1,4 @@
+using PlasticGui;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,21 +31,30 @@ public class EnemyDamage : LivingEntity
     public override void Die()
     {
         enemyAI.Die();
-        rb.Sleep();
         capCol.enabled = false;
-        Destroy(gameObject, 5f);
-        base.Die();
+        rb.isKinematic = true;
+        //base.Die();
+        if(dead==false)
+        StartCoroutine(PoolPush());
     }
-
+    IEnumerator PoolPush()
+    {
+        yield return new WaitForSeconds(3.0f);
+        capCol.enabled = true;
+        rb.isKinematic = false;
+        gameObject.SetActive(false);
+        Health = InitHealth;
+    }
     private void OnCollisionEnter(Collision col)
     {
         if (col.transform.CompareTag(bulletTag))
         {
-            Destroy(col.gameObject);
+            col.gameObject.SetActive(false);
             Vector3 hitPoint = col.contacts[0].point;
             Vector3 hitNormal = col.contacts[0].normal;
             OnDamage(30f, hitPoint, hitNormal);
             GetComponent<Rigidbody>().isKinematic = true;
         }   
     }
+
 }
