@@ -17,6 +17,7 @@ public class BarrelCtrl : MonoBehaviour
     Vector3 pos = Vector3.zero;
 
     private readonly string bulletTag = "BULLET";
+    private readonly string E_bulletTag = "E_BULLET"; //readonly: 런타임시-필요한 때에 활성화 된다.
     void Start()
     {
         expEffect = Resources.Load<GameObject>("Effect/BulletImpactFleshBigEffect");
@@ -31,7 +32,7 @@ public class BarrelCtrl : MonoBehaviour
     }
     private void OnCollisionEnter(Collision col)
     {
-        if (col.collider.CompareTag(bulletTag))
+        if (col.collider.CompareTag(bulletTag) || col.collider.CompareTag(E_bulletTag))
         {
             if(++hitCount == 3)
             {

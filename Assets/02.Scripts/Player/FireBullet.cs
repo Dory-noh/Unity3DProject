@@ -5,7 +5,7 @@ using UnityEngine;
 public class FireBullet : MonoBehaviour
 {
     [SerializeField] GameObject bulletPrefab;
-    [SerializeField] private Transform firePos; //네트워크 게임에서는 태그나 이름으로 찾아선 안 된다.
+    public Transform firePos; //네트워크 게임에서는 태그나 이름으로 찾아선 안 된다.
     [SerializeField] PlayerInput playerInput;
     [SerializeField] ParticleSystem muzzleFlash;
     [SerializeField] ParticleSystem CartrigeEffect;
@@ -14,7 +14,7 @@ public class FireBullet : MonoBehaviour
     public GunData gunData_r;
     public GunData gunData_s;
 
-    private readonly string strBulletCtrl = "BulletCtrl";
+    private readonly string strBulletCtrl = "Prefab/Bullet";
     private readonly int hashReload = Animator.StringToHash("Reload");
     [SerializeField] private int curBullet = 10; //현재 총알 수
     private readonly int maxBullet = 10; //탄창에 들어있는 최대 총알 수

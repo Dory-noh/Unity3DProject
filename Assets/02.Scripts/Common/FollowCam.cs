@@ -26,11 +26,11 @@ public class FollowCam : MonoBehaviour
         tr.LookAt(target.position+(target.up*targetOffset)); //위치값 더하거나 뺌, 거리는 곱한다.
     }
 
-    private void OnDrawGizmos()
-    {
-        tr = transform;
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(target.position+(target.up*targetOffset),0.1f);
-        Gizmos.DrawLine(target.position + (target.up * targetOffset), tr.position);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    tr = transform;
+    //    Gizmos.color = Color.green;
+    //    Gizmos.DrawSphere(target.position+(target.up*targetOffset),0.1f);
+    //    Gizmos.DrawLine(target.position + (target.up * targetOffset), tr.position);
+    //}
 }

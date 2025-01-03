@@ -12,8 +12,7 @@ public class MoveAgent : MonoBehaviour
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private List<Transform> patrolLists;
     [SerializeField] private Transform tr;
-    [SerializeField] private CapsuleCollider capCol;
-    [SerializeField] private Rigidbody rb;
+    
 
     private float damping;
     [SerializeField] float walkSpeed = 3f;
@@ -66,8 +65,6 @@ public class MoveAgent : MonoBehaviour
         playerTr = GameObject.FindGameObjectWithTag(tagPlayer).transform;
         agent = GetComponent<NavMeshAgent>();
         
-        capCol = GetComponent<CapsuleCollider>();
-        rb = GetComponent<Rigidbody>();
         var patrolPoints = GameObject.Find("PatrolPoints");
         if(patrolPoints != null)
         {
@@ -106,12 +103,5 @@ public class MoveAgent : MonoBehaviour
             if (idx == patrolLists.Count) idx = 0;
             currentDestination = patrolLists[idx].position;
         }
-    }
-
-    public void Die()
-    {
-        rb.Sleep();
-        capCol.enabled = false;
-        Destroy(gameObject, 5f);
     }
 }
