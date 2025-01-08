@@ -21,8 +21,6 @@ public class Enemy2AI : MonoBehaviour
     [SerializeField] MoveAgent2 moveAgent;
     [SerializeField] Animator animator;
     [SerializeField] Enemy2Fire enemyFire;
-    [SerializeField] private CapsuleCollider capCol;
-    [SerializeField] private Rigidbody rb;
 
     private float dist;
 
@@ -47,15 +45,13 @@ public class Enemy2AI : MonoBehaviour
         playerTr = GameObject.FindGameObjectWithTag(playerTag).transform;
         
         tr = transform;
-        capCol = GetComponent<CapsuleCollider>();
-        rb = GetComponent<Rigidbody>();
-
         
+        
+        enemyFire = GetComponent<Enemy2Fire>();
         enemyFire.isFire = false;
     }
     private void OnEnable()
     {
-        enemyFire = GetComponent<Enemy2Fire>();
         moveAgent = GetComponent<MoveAgent2>();
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
@@ -64,7 +60,7 @@ public class Enemy2AI : MonoBehaviour
         animator.SetFloat(hashOffeset, Random.Range(1f, 3f));
         animator.SetFloat(hashWalkSpeed, Random.Range(1f, 2f));
         PlayerDamage.onDeath += OnPlayerDie;
-       BarrelCtrl.OnEnemyDie += Die;
+       // BarrelCtrl.OnEnemyDie += Die;
     }
     void Update()
     {
@@ -109,33 +105,13 @@ public class Enemy2AI : MonoBehaviour
     public void Die()
     {
         if (isDie == true) return;
-        isDie = true;
-        if (gameObject.activeSelf)
-        {
-            //Debug.Log($"{gameObject.name} »ç¸Á");
-            GameManager.instance.KillScoreCount();
-        }
-        if (agent.isActiveAndEnabled) agent.isStopped = true;
-        if(enemyFire!=null) enemyFire.isFire = false;
+        agent.isStopped = true;
+        enemyFire.isFire = false;
         animator.SetTrigger(hashDie);
         animator.SetInteger(hashDieIdx, Random.Range(0, 3));
-        //StopAllCoroutines();
+        isDie = true;
         //gameObject.SetActive(false);
-        
-        if (gameObject.activeSelf)
-        StartCoroutine(PoolPush());
-        
     }
-
-    IEnumerator PoolPush()
-    {
-        yield return new WaitForSeconds(3.0f);
-        capCol.enabled = true;
-        rb.isKinematic = false;
-        gameObject.SetActive(false);
-        state = State.patrol;
-    }
-
     private void Patrol()
     {
         agent.isStopped = false;

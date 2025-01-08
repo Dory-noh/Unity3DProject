@@ -21,7 +21,6 @@ public class LivingEntity : MonoBehaviour, IDamageable
     public virtual void OnDamage(float damage, Vector3 hitPoint, Vector3 hitNormal)
     {
         Health -= damage;
-        Health = Mathf.Clamp(Health, 0, InitHealth);
         if(Health <= 0 && !dead)
         {
             Die();

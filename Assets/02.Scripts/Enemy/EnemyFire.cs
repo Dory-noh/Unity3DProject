@@ -40,21 +40,15 @@ public class EnemyFire : MonoBehaviour
         fireEffect = Resources.Load<GameObject>("Effect/FlareMobile");
         source = GetComponent<AudioSource>();
         yield return new WaitForSeconds(0.5f);
-        
-        
-        //E_Bullet = Resources.Load<GameObject>("Prefab/E_Bullet");
-        
-        
-        reloadWs = new WaitForSeconds(gunData_Ak.reloadTime);
-    }
-    private void OnEnable()
-    {
         tr = GetComponent<Transform>();
         playerTr = GameObject.FindGameObjectWithTag(playerTag).transform;
+        //E_Bullet = Resources.Load<GameObject>("Prefab/E_Bullet");
         E_FirePos = transform.GetChild(3).GetChild(0).GetChild(0).transform;
         muzzleFlash = E_FirePos.GetComponentInChildren<MeshRenderer>();
         muzzleFlash.enabled = false;
+        reloadWs = new WaitForSeconds(gunData_Ak.reloadTime);
     }
+
 
     void Update()
     {

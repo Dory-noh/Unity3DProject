@@ -87,12 +87,7 @@ public class MoveAgent : MonoBehaviour
         
        if(agent.isStopped == false)
         {
-
-            Quaternion rot;
-            if (agent.desiredVelocity != Vector3.zero)
-                rot = Quaternion.LookRotation(agent.desiredVelocity); //현재 이동 방향을 바라봄
-            else
-                rot = Quaternion.identity;
+            Quaternion rot = Quaternion.LookRotation(agent.desiredVelocity);
             transform.rotation = Quaternion.Slerp(transform.rotation, rot, damping * Time.deltaTime);
         }
         //if (!isPatrolling) return;
