@@ -23,6 +23,8 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Transform tr;
     [SerializeField] private EnemyFire enemyFire;
+    [SerializeField] private CapsuleCollider capCol;
+    [SerializeField] private Rigidbody rb;
 
     private float dist = 0;
     [SerializeField] private float attackDist = 6f;
@@ -40,15 +42,17 @@ public class EnemyAI : MonoBehaviour
     private readonly int hashPlayerDie = Animator.StringToHash("PlayerDie");
     void Start()
     {
-        enemyFire = GetComponent<EnemyFire>();
+        
         
         playerTr = GameObject.FindGameObjectWithTag(tagPlayer).transform;
-        
-        
+
+        capCol = GetComponent<CapsuleCollider>();
+        rb = GetComponent<Rigidbody>();
         tr = GetComponent<Transform>();
     }
     private void OnEnable()
     {
+        enemyFire = GetComponent<EnemyFire>();
         agent = GetComponent<NavMeshAgent>();
         moveAgent = GetComponent<MoveAgent>();
         animator = GetComponent<Animator>();
@@ -57,7 +61,7 @@ public class EnemyAI : MonoBehaviour
         state = State.idle;
         isDie = false;
         PlayerDamage.onDeath += OnPlayerDie;
-        //BarrelCtrl.OnEnemyDie += Die;
+        BarrelCtrl.OnEnemyDie += Die; //이벤트 등록
     }
     void Update()
     {   if (GameManager.instance != null && GameManager.instance.isGameover) return;
@@ -133,13 +137,31 @@ public class EnemyAI : MonoBehaviour
     public void Die()
     {
         if (isDie == true) return;
-        agent.isStopped = true;
+        isDie = true;
+        if (gameObject.activeSelf)
+        {
+            //Debug.Log($"{gameObject.name} 사망");
+            GameManager.instance.KillScoreCount();
+        }
+        if (agent.isActiveAndEnabled)
+            agent.isStopped = true;
+        if (enemyFire != null) enemyFire.isFire = false;
         animator.SetTrigger(hashDie);
         int dieIdx = Random.Range(0, 3);
         animator.SetInteger(hashDieIdx, dieIdx);
-        isDie = true;
-        //gameObject.SetActive(false);
-
+        //StopAllCoroutines();
+        //GameManager.instance.KillScoreCount();
+        if(gameObject.activeSelf)
+        StartCoroutine(PoolPush());
+        
+    }
+    IEnumerator PoolPush()
+    {
+        yield return new WaitForSeconds(3.0f);
+        capCol.enabled = true;
+        rb.isKinematic = false;
+        gameObject.SetActive(false);
+        state = State.patrol;
     }
 
     public void OnPlayerDie() //플레이어 사망시 호출될 함수

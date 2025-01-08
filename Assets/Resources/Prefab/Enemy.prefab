@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d44abbea8a5b0b489bd69839cd3c090, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   gizmoColor: {r: 0.044875145, g: 0, b: 1, a: 1}
   _radius: 0.1
 --- !u!1 &8686346810025929320
@@ -341,8 +342,11 @@ MonoBehaviour:
   agent: {fileID: 0}
   tr: {fileID: 0}
   enemyFire: {fileID: 0}
+  capCol: {fileID: 0}
+  rb: {fileID: 0}
   attackDist: 6
   traceDist: 12
+  isDie: 0
 --- !u!114 &7498235482893172241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,7 +480,7 @@ MonoBehaviour:
   fireEffect: {fileID: 0}
   tr: {fileID: 0}
   playerTr: {fileID: 0}
-  E_Bullet: {fileID: 0}
+  enemyAI: {fileID: 0}
   muzzleFlash: {fileID: 0}
   E_FirePos: {fileID: 0}
   gunData_Ak: {fileID: 11400000, guid: 2eeed86054271ff43ac3404a7d254a6e, type: 2}
@@ -498,6 +502,8 @@ MonoBehaviour:
   enemyAI: {fileID: 0}
   capCol: {fileID: 0}
   rb: {fileID: 0}
+  hpBarPrefab: {fileID: 3066395412691638689, guid: d9caf86934d1c7342b3697eb3213d364, type: 3}
+  hpBarOffest: {x: 0, y: 2.2, z: 0}
 --- !u!4 &1486689267726203131 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400030, guid: a1172801cc64d474bb0e48c03b543a5a, type: 3}

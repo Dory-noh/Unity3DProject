@@ -17,9 +17,9 @@ public class BarrelCtrl : MonoBehaviour
     public float expRadius = 15; //Expolsion Range
     Vector3 pos = Vector3.zero;
     private Shake shake;
-
-    public delegate void EnemyDie();
-    public static event EnemyDie OnEnemyDie;
+    //델리게이트 및 이벤트 선언
+    public delegate void EnemyDie(); //매개변수, 반환형 없는 델리게이트 선언
+    public static event EnemyDie OnEnemyDie; //델리게이트를 이벤트화 하였다.
 
     private readonly string bulletTag = "BULLET";
     private readonly string E_bulletTag = "E_BULLET"; //readonly: 런타임시-필요한 때에 활성화 된다.
@@ -60,7 +60,8 @@ public class BarrelCtrl : MonoBehaviour
         Invoke("BarrelMass", 3f);
         shake.shakeRotate = true;
         StartCoroutine(shake.ShakeCamera()); //디폴트 값으로 적용됨
-        OnEnemyDie();
+        //OnEnemyDie();
+        
     }
 
     private void BarrelBomb()
@@ -76,10 +77,13 @@ public class BarrelCtrl : MonoBehaviour
                 rb.mass = 1.0f; //폭파 시 무게를 줄인다.
                 rb.AddExplosionForce(1200f, pos, expRadius, 1000f);
                 //폭파력 위치   반경   위로 솟구치는 힘
+                rb.transform.position = col.transform.position;
+                rb.transform.rotation = col.transform.rotation;
             }
             col.gameObject.SendMessage("Die", SendMessageOptions.DontRequireReceiver); //범위 내 위치한 적에게만 Die 메서드를 보낸다.
+            
         }
-        
+        OnEnemyDie();
     }
 
     void BarrelMass()
@@ -92,9 +96,11 @@ public class BarrelCtrl : MonoBehaviour
             var rb = col.GetComponent<Rigidbody>();
             if (rb != null) //유효성 검사
             {
-                rb.mass = 60.0f; //폭파 시 무게를 줄인다.
-                //폭파력 위치   반경   위로 솟구치는 힘
+                rb.mass = 60.0f; //폭파 후 무게를 복구시킨다.
+                
+
             }
+           
         }
     }
     void Update()
