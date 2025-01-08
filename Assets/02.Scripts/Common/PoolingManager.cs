@@ -23,6 +23,10 @@ public class PoolingManager : MonoBehaviour
     [SerializeField] private GameObject[] enemyPrefab = new GameObject[2];
     [SerializeField] private List<GameObject> enemyList;
 
+    //적 hpBar 오브젝트 풀링
+    [SerializeField] private Canvas uiCanvas;
+    [SerializeField] GameObject hpBarPrfab;
+    [SerializeField] private List<GameObject> hpBarList;
 
     private readonly string strBulletCtrl = "Prefab/Bullet";
     private readonly string strEnemyBulletCtrl = "Prefab/E_Bullet";
@@ -58,6 +62,35 @@ public class PoolingManager : MonoBehaviour
         CreateEnemyBulletPooling();
         CreateEnemyBullet2Pooling();
     }
+    private void Start()
+    {
+        uiCanvas = GameObject.Find("UI-Canvas").GetComponent<Canvas>();
+        hpBarPrfab = Resources.Load<GameObject>("Prefab/EnemyHpBar");
+        CreateEnemyHpBarPooling();
+    }
+    void CreateEnemyHpBarPooling()
+    {
+        for(int i = 0; i < 10; i++)
+        {
+            var hpBar = Instantiate(hpBarPrfab, uiCanvas.transform);
+            hpBar.name = $"{i + 1}번째 hpBar";
+            hpBar.SetActive(false);
+            hpBarList.Add(hpBar);
+        }
+    }
+
+    public GameObject GetHpBar()
+    {
+        foreach (var hpBar in hpBarList)
+        {
+            if (hpBar.activeSelf == false)
+            {
+                return hpBar;
+            }
+        }
+        return null;
+    }
+
 
     private void OnEnable()
     {

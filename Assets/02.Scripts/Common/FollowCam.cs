@@ -16,6 +16,13 @@ public class FollowCam : MonoBehaviour
     {
         tr = transform;
     }
+    private void Update()
+    {
+        if (target != null)
+        {
+            return;
+        }
+    }
 
     void LateUpdate()//플레이어가 이동한 후에 카메라가 따라 가야 하니깐 LateUpdate 사용(LateUpdate는 Update, FixedUpdate 실행 다음에 실행된다.)
     {

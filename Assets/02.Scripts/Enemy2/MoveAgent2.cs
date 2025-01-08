@@ -36,7 +36,15 @@ public class MoveAgent2 : MonoBehaviour
     {
         if (agent.isStopped == false)
         {
-            Quaternion rot = Quaternion.LookRotation(agent.desiredVelocity);
+            Quaternion rot;
+            if (agent.desiredVelocity != Vector3.zero)
+            {
+                rot = Quaternion.LookRotation(agent.desiredVelocity);
+            }
+            else
+            {
+                rot = Quaternion.identity;
+            }
             transform.rotation = Quaternion.Slerp(transform.rotation, rot, damping * Time.deltaTime);
         }
     }

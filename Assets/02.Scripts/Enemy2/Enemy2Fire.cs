@@ -30,23 +30,28 @@ public class Enemy2Fire : MonoBehaviour
     void Start()
     {
         enemy2AI = GetComponent<Enemy2AI>();
-        playerTr = GameObject.FindGameObjectWithTag(playerTag).transform;
-        tr = transform;
+        
+        
         //bulletPrefab = Resources.Load<GameObject>("Prefab/E2_Bullet");
-        firePos = transform.GetChild(1).GetChild(0).GetChild(0).transform;
+        
         reloadClip = E2_GunData.reloadClip;
         fireClip = E2_GunData.shotClip;
         animator = GetComponent<Animator>();
         source = GetComponent<AudioSource>();
         
-        reloadWs = new WaitForSeconds(E2_GunData.reloadTime);
-        muzzleFlash = firePos.GetChild(0).GetComponent<MeshRenderer>();
-        muzzleFlash.enabled = false;
+        
+        
         
     }
     private void OnEnable()
     {
+        playerTr = GameObject.FindGameObjectWithTag(playerTag).transform;
+        tr = transform;
         curBullet = maxBullet;
+        reloadWs = new WaitForSeconds(E2_GunData.reloadTime);
+        firePos = transform.GetChild(1).GetChild(0).GetChild(0).transform;
+        muzzleFlash = firePos.GetChild(0).GetComponent<MeshRenderer>();
+        muzzleFlash.enabled = false;
     }
 
     void Update()
